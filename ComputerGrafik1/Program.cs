@@ -7,6 +7,8 @@
             Console.WriteLine("Hello Martin, does it work?!");
 
             Console.WriteLine("Test");
+
+            Console.WriteLine("Test2)");
         }
     }
 }
