@@ -1,0 +1,109 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
+
+namespace ComputerGrafik1
+{
+    internal class SphereMesh : Mesh
+    {
+       
+        float radius;
+        int sectorCount;
+        int stackCount;
+
+        private List<float> listofVertices;
+        private List<uint> listofIndices;
+        private List<float> texCoords;
+        private List<float> listOfNormals;
+
+
+        public SphereMesh(float radius, int sectorCount, int stackCount)
+        {
+            this.radius = radius;
+            this.sectorCount = sectorCount;
+            this.stackCount = stackCount;
+           
+        }
+
+        
+        protected override uint[] Indices => base.Indices;
+        protected override float[] Vertices => new float[]
+         {
+            -0.5f, -0.5f, 0.0f, //Bottom-left vertex
+            0.5f, -0.5f, 0.0f, //Bottom-right vertex
+            0.0f,  0.5f, 0.0f  //Top vertex
+        };
+        static int vertexArrayObject;
+        static int vertexBufferObject;
+        private static bool buffersCreated;
+
+        public void DrawShapeOfSphere()
+        {
+            float lengthInv = 1.0f / radius;
+            float sectorStep = 2 * MathF.PI / sectorCount;
+            float stackStep = MathF.PI / stackCount;
+            float sectorAngle, stackAngle;
+            
+
+            for(int i = 0; i <= stackCount; i++)
+            {
+                stackAngle = MathF.PI / 2 - i * stackStep;
+                float xy = radius * MathF.Cos(stackAngle);
+                float z = radius * MathF.Sin(stackAngle);
+
+                for(int j = 0; j <= stackCount; j++)
+                {
+                    sectorAngle = j * sectorStep;
+
+                    float x = xy * MathF.Cos(sectorAngle);
+                    float y = xy * MathF.Sin(sectorAngle);
+
+                    listofVertices.Add(x);
+                    listofVertices.Add(y);
+                    listofVertices.Add(z);
+
+                    float nx = x * lengthInv;
+                    float ny = y * lengthInv;
+                    float nz = z * lengthInv;
+
+                    listOfNormals.Add(nx);
+                    listOfNormals.Add(ny);
+                    listOfNormals.Add(nz);
+
+                    float s = (float)j / sectorCount;
+                    float t = (float)i / stackCount;
+                    texCoords.Add(s);
+                    texCoords.Add(t);
+                }
+            }
+        }
+        protected override void GenerateBuffers()
+        {
+
+            if (buffersCreated)
+            {
+                return;
+            }
+            vertexBufferObject = GL.GenBuffer();
+
+            GL.BindBuffer(BufferTarget.ArrayBuffer, vertexBufferObject);
+            GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Length * sizeof(float), Vertices, BufferUsageHint.StaticDraw);
+            vertexArrayObject = GL.GenVertexArray();
+            GL.BindVertexArray(vertexArrayObject);
+            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
+
+            // Enable variable 0 in the shader.
+            GL.EnableVertexAttribArray(0);
+            buffersCreated = true;
+        }
+        public override void Draw()
+        {
+            GL.BindVertexArray(vertexArrayObject);
+            GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
+        }
+    }
+}
