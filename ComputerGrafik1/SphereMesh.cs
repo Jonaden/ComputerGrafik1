@@ -41,7 +41,7 @@ namespace ComputerGrafik1
         static int vertexBufferObject;
         private static bool buffersCreated;
 
-        public void DrawShapeOfSphere()
+        public void GenerateVertices()
         {
             float lengthInv = 1.0f / radius;
             float sectorStep = 2 * MathF.PI / sectorCount;
@@ -77,9 +77,49 @@ namespace ComputerGrafik1
                     float s = (float)j / sectorCount;
                     float t = (float)i / stackCount;
                     texCoords.Add(s);
-                    texCoords.Add(t);
+                    texCoords.Add(t);                   
+                }              
+            }
+        }
+
+        public void GenerateIndices()
+        {
+            List<int> indices = new List<int>();
+            List<int> lineIndices = new List<int>();
+            int k1, k2;
+
+            for(int i = 0; i < stackCount; i++)
+            {
+                k1 = i * (sectorCount + 1);
+                k2 = k1 + sectorCount + 1;
+
+                for(int j = 0; i < sectorCount; j++, k1++, k2++)
+                {
+                    if (i != 0)
+                    {
+                        indices.Add(k1);
+                        indices.Add(k2);
+                        indices.Add(k1 + 1);
+                    }
+
+                    if(i != (stackCount - 1))
+                    {
+                        indices.Add(k1 + 1);
+                        indices.Add(k2);
+                        indices.Add(k2 + k1);
+                    }
+
+                    lineIndices.Add(k1);
+                    lineIndices.Add(k2);
+
+                    if(i != 0)
+                    {
+                        lineIndices.Add(k1);
+                        lineIndices.Add(k1 + 1);
+                    }
                 }
             }
+       
         }
         protected override void GenerateBuffers()
         {
@@ -91,7 +131,7 @@ namespace ComputerGrafik1
             vertexBufferObject = GL.GenBuffer();
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, vertexBufferObject);
-            GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Length * sizeof(float), Vertices, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, listofVertices.Count * sizeof(float), listofVertices.ToArray(), BufferUsageHint.StaticDraw);
             vertexArrayObject = GL.GenVertexArray();
             GL.BindVertexArray(vertexArrayObject);
             GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
@@ -103,7 +143,7 @@ namespace ComputerGrafik1
         public override void Draw()
         {
             GL.BindVertexArray(vertexArrayObject);
-            GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
+            GL.DrawElements(PrimitiveType.Triangles, listofVertices.Count, DrawElementsType.UnsignedInt, listofIndices.Count);
         }
     }
 }
