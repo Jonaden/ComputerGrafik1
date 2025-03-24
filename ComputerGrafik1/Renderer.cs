@@ -1,12 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
 
 namespace ComputerGrafik1
 {
     public class Renderer
     {
+        public Material material;
+        Mesh mesh;
+        public Renderer(Material material, Mesh mesh)
+        {
+            this.material = material;
+            this.mesh = mesh;
+        }
+
+        public void Draw(Matrix4 mvp)
+        {
+            material.UseShader();
+            material.SetUniform("mvp", mvp);
+            mesh.Draw();
+        }
     }
 }
