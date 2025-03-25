@@ -31,13 +31,18 @@ namespace ComputerGrafik1
             uniforms.Add("texture0", texture0);
             uniforms.Add("texture1", texture1);
             Material mat = new Material("Shaders/shader.vert", "Shaders/shader.frag", uniforms);
-            Renderer rend = new Renderer(mat, new TriangleMesh());
-            Renderer rend2 = new Renderer(mat, new CubeMesh());
-            GameObject triangle = new GameObject(rend, this);
-            gameObjects.Add(triangle);
-            GameObject cube = new GameObject(rend2, this);
-            cube.transform.Position = new Vector3(1, 0, 0);
-            gameObjects.Add(cube);
+            //Renderer rend = new Renderer(mat, new TriangleMesh());
+            //Renderer rend2 = new Renderer(mat, new CubeMesh());
+            Renderer rend3 = new Renderer(mat, new CapsuleStetchMesh());
+            //GameObject triangle = new GameObject(rend, this);
+            //gameObjects.Add(triangle);
+            //GameObject cube = new GameObject(rend2, this);
+            //cube.transform.Position = new Vector3(1, 0, 0);
+            //gameObjects.Add(cube);
+            GameObject capsule = new GameObject(rend3, this);
+            capsule.AddComponent<QuadBeheaviour>();
+            capsule.transform.Position = new Vector3(0,0.5f,-3);
+            gameObjects.Add(capsule);
             GL.Enable(EnableCap.DepthTest);
             watch.Start();
         }
