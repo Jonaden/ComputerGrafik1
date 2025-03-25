@@ -11,8 +11,8 @@ namespace ComputerGrafik1
 {
     public class Mesh
     {
-        protected virtual float[] Vertices { get; set; }
-        protected virtual uint[] Indices { get; set; }
+        public virtual float[] Vertices { get; set; }
+        public virtual uint[] Indices { get; set; }
 
         int vertexArrayObject;
         int elementBufferObject;
