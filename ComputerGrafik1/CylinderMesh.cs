@@ -4,16 +4,28 @@ namespace ComputerGrafik1
 {
 	public class CylinderMesh : Mesh
 	{
-		static int vertexArrayObject;
-		static int vertexBufferObject;
-		static int elementBufferObject;
+
+
+		// Inherited from Mesh
+		private static int vertexArrayObject;
+		private static int vertexBufferObject;
+		private static int elementBufferObject;
 		private static bool buffersCreated;
+
+		public override void Draw()
+		{
+			GL.BindVertexArray(vertexArrayObject);
+			GL.DrawElements(PrimitiveType.Triangles, Indices.Length, DrawElementsType.UnsignedInt, 0);
+			//GL.DrawArrays(PrimitiveType.Points, 0, Vertices.Length);
+		}
 
 		protected override void GenerateBuffers()
 		{
-			int sectorCount = 8;
-			int baseCenterIndex;
-			Vertices = GetCylinderVertices(sectorCount, 2, 1, out baseCenterIndex).ToArray();
+			int sectorCount = 16;
+			float height = 4;
+			float radius = 1;
+
+			Vertices = GetCylinderVertices(sectorCount, height, radius, out int baseCenterIndex).ToArray();
 			Indices = GetCylinderIndices(sectorCount, baseCenterIndex).ToArray();
 
 			if (buffersCreated) return;
@@ -25,24 +37,18 @@ namespace ComputerGrafik1
 			GL.BindVertexArray(vertexArrayObject);
 
 			GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
+			GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
 			GL.EnableVertexAttribArray(0);
 			GL.EnableVertexAttribArray(1);
-			GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
 
 			elementBufferObject = GL.GenBuffer();
-			GL.BindBuffer(BufferTarget.ElementArrayBuffer, (int)elementBufferObject);
+			GL.BindBuffer(BufferTarget.ElementArrayBuffer, elementBufferObject);
 			GL.BufferData(BufferTarget.ElementArrayBuffer, Indices.Length * sizeof(uint), Indices, BufferUsageHint.StaticDraw);
 
 
 			buffersCreated = true;
 		}
 
-		public override void Draw()
-		{
-			GL.BindVertexArray(vertexArrayObject);
-			GL.DrawElements(PrimitiveType.Triangles, Indices.Length, DrawElementsType.UnsignedInt, 0);
-			//GL.DrawArrays(PrimitiveType.Triangles, 0, Vertices.Length/5);
-		}
 
 		static List<float> GetUnitCircleVertices(int sectorCount)
 		{
@@ -77,7 +83,7 @@ namespace ComputerGrafik1
 				{
 					float ux = unitVertices[k];
 					float uy = unitVertices[k + 1];
-					float uz = unitVertices[k + 2];
+
 					// position vector
 					vertices.Add(ux * radius);             // vx
 					vertices.Add(uy * radius);             // vy
@@ -97,7 +103,6 @@ namespace ComputerGrafik1
 			for (int i = 0; i < 2; ++i)
 			{
 				float h = -height / 2.0f + i * height;           // z value; -h/2 to h/2
-				float nz = -1 + i * 2;                           // z value of normal; -1 to 1
 
 				// center point
 				vertices.Add(0); vertices.Add(0); vertices.Add(h);
@@ -120,7 +125,8 @@ namespace ComputerGrafik1
 			return vertices;
 		}
 
-		List<uint> GetCylinderIndices(int sectorCount, int baseCenterIndex)
+
+		private static List<uint> GetCylinderIndices(int sectorCount, int baseCenterIndex)
 		{
 			List<int> indices = new List<int>();
 			int topCenterIndex = baseCenterIndex + sectorCount + 1; // include center vertex
