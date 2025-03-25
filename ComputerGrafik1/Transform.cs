@@ -15,8 +15,8 @@ namespace ComputerGrafik1
         {
             Matrix4 t = Matrix4.CreateTranslation(Position);
             Matrix4 rX = Matrix4.CreateRotationX(Rotation.X);
-            Matrix4 rY = Matrix4.CreateRotationX(Rotation.Y);
-            Matrix4 rZ = Matrix4.CreateRotationX(Rotation.Z);
+            Matrix4 rY = Matrix4.CreateRotationY(Rotation.Y);
+            Matrix4 rZ = Matrix4.CreateRotationZ(Rotation.Z);
             Matrix4 s = Matrix4.CreateScale(Scale);
 
             return s * rX * rY * rZ * t;
