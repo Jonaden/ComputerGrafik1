@@ -31,14 +31,17 @@ namespace ComputerGrafik1
             uniforms.Add("texture0", texture0);
             uniforms.Add("texture1", texture1);
             Material mat = new Material("Shaders/shader.vert", "Shaders/shader.frag", uniforms);
+
             Renderer rend = new Renderer(mat, new TriangleMesh());
-            Renderer rend2 = new Renderer(mat, new CubeMesh());
-            Renderer rend3 = new Renderer(mat, new SphereMesh(1, 30, 30));
             GameObject triangle = new GameObject(rend, this);
             gameObjects.Add(triangle);
+            
+            Renderer rend2 = new Renderer(mat, new CubeMesh());
             GameObject cube = new GameObject(rend2, this);
             cube.transform.Position = new Vector3(1, 0, 0);
             gameObjects.Add(cube);
+
+            Renderer rend3 = new Renderer(mat, new SphereMesh());
             GameObject sphere = new GameObject(rend3, this);
             sphere.transform.Position = new Vector3(-1, 0, 0);
             GL.Enable(EnableCap.DepthTest);
