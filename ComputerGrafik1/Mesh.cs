@@ -33,13 +33,14 @@ namespace ComputerGrafik1
         };
         public Mesh()
         {
-            GenerateBuffers();
+            //GenerateBuffers();
         }
 
         public Mesh(float[] vertices, uint[] indices)
         {
             this.Vertices = vertices;
             this.Indices = indices;
+            GenerateBuffers();
         }
         protected virtual void GenerateBuffers()
         {

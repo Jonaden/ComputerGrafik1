@@ -31,7 +31,7 @@ namespace ComputerGrafik1
     public class Model
     {
 
-        public List<Mesh> meshes;
+        public List<ModelMesh> meshes;
 
         public Model(string path)
         {
@@ -55,9 +55,9 @@ namespace ComputerGrafik1
                 return;
             }
 
-            meshes = new List<Mesh>();
+            meshes = new List<ModelMesh>();
 
-            float scale = 1/200f;
+            float scale = 1/2000f;
             Matrix4 scalingMatrix = Matrix4.CreateScale(scale);
 
 
@@ -69,7 +69,7 @@ namespace ComputerGrafik1
 
         public virtual void Draw()
         {
-            foreach (Mesh mesh in meshes)
+            foreach (ModelMesh mesh in meshes)
             {
                 mesh.Draw();
             }
@@ -91,7 +91,7 @@ namespace ComputerGrafik1
             }
         }
 
-        private Mesh ProcessMesh(AssimpMesh mesh, Matrix4 transform)
+        private ModelMesh ProcessMesh(AssimpMesh mesh, Matrix4 transform)
         {
             List<float> vertices = new();
             List<int> indices = new();
@@ -108,11 +108,11 @@ namespace ComputerGrafik1
                 vertices.Add(transformedPosition.Y);
                 vertices.Add(transformedPosition.Z);
 
-                //Vector3 normal = mesh.Normals[i].ConvertAssimpVector3();
-                //Vector3 transformedNormal = Vector3.TransformNormalInverse(normal, inverseTransform);
-                //vertices.Add(transformedNormal.X);
-                //vertices.Add(transformedNormal.Y);
-                //vertices.Add(transformedNormal.Z);
+                Vector3 normal = mesh.Normals[i].ConvertAssimpVector3();
+                Vector3 transformedNormal = Vector3.TransformNormalInverse(normal, inverseTransform);
+                vertices.Add(transformedNormal.X);
+                vertices.Add(transformedNormal.Y);
+                vertices.Add(transformedNormal.Z);
                 
                 Vector2 vec;
                 vec.X = mesh.TextureCoordinateChannels[0][i].X;
@@ -132,7 +132,7 @@ namespace ComputerGrafik1
 
             List<uint> uints = indices.Select(i => (uint)i).ToList();
 
-            return new Mesh(vertices.ToArray(), uints.ToArray());
+            return new ModelMesh(vertices.ToArray(), uints.ToArray());
         }
 
     }
