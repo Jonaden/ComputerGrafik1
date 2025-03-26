@@ -12,6 +12,7 @@ namespace ComputerGrafik1
     public class Material
     {
         Shader shader;
+        ModelLoader modelLoader;
         Dictionary<string, object> uniforms = new Dictionary<string, object>();
         Dictionary<int, Texture> textures = new Dictionary<int, Texture>();
 

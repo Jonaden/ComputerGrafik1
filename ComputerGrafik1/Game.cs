@@ -34,20 +34,29 @@ namespace ComputerGrafik1
 
             Renderer rend = new Renderer(mat, new TriangleMesh());
             GameObject triangle = new GameObject(rend, this);
-            gameObjects.Add(triangle);
+           // gameObjects.Add(triangle);
             
             Renderer rend2 = new Renderer(mat, new CubeMesh());
             GameObject cube = new GameObject(rend2, this);
             cube.transform.Position = new Vector3(1, 0, 0);
-            gameObjects.Add(cube);
+           // gameObjects.Add(cube);
 
             Renderer rend3 = new Renderer(mat, new SphereMesh());
             GameObject sphere = new GameObject(rend3, this);
-            sphere.transform.Position = new Vector3(-1, 0, 0);
+            sphere.transform.Position = new Vector3(0, 0, 0);
+          
+
+            ModelLoader obj1 = ModelLoader.LoadFromFile("teapot.obj");
+            Renderer rend4 = new Renderer(mat, obj1);
+            GameObject teaPot = new GameObject(rend4, this);
+            gameObjects.Add(teaPot);
+            teaPot.transform.Position = new Vector3(-2, 0, -10);  
+            
             GL.Enable(EnableCap.DepthTest);
             watch.Start();
         }
 
+      
         protected override void OnUnload()
         {
             base.OnUnload();

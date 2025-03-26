@@ -12,7 +12,7 @@ namespace ComputerGrafik1
         static int vertexArrayObject;
         static int vertexBufferObject;
         private static bool buffersCreated;
-        protected override float[] Vertices => new float[]
+        public override float[] Vertices => new float[]
         {
             -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
              0.5f, -0.5f, -0.5f,  1.0f, 0.0f,

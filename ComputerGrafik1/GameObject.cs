@@ -16,6 +16,7 @@ namespace ComputerGrafik1
     {
         public Transform transform;
         public Renderer renderer;
+      
 
         List<Behaviour> behaviours = new List<Behaviour>();
 

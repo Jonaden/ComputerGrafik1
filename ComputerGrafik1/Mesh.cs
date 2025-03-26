@@ -33,7 +33,7 @@ namespace ComputerGrafik1
         };
         public Mesh()
         {
-            GenerateBuffers();
+            //GenerateBuffers();
         }
         protected virtual void GenerateBuffers()
         {
@@ -45,9 +45,10 @@ namespace ComputerGrafik1
             vertexArrayObject = GL.GenVertexArray();
             GL.BindVertexArray(vertexArrayObject);
 
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
             GL.EnableVertexAttribArray(0);
             GL.EnableVertexAttribArray(1);
+
+            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
             GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
 
             elementBufferObject = GL.GenBuffer();

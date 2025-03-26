@@ -14,7 +14,7 @@ namespace ComputerGrafik1
         static int vertexArrayObject;
         static int elementBufferObject;
         static int vertexBufferObject;
-        protected override float[] Vertices => new float[]
+        public override float[] Vertices => new float[]
          {
             //Position          Texture coordinates
              0.5f,  0.5f, 0.0f, 1.0f, 1.0f, // top right
@@ -22,7 +22,7 @@ namespace ComputerGrafik1
             -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom left
             -0.5f,  0.5f, 0.0f, 0.0f, 1.0f  // top left
         };
-        protected override uint[] Indices => new uint[]
+        public override uint[] Indices => new uint[]
         {
             0, 1, 3,   // first triangle
             1, 2, 3    // second triangle
