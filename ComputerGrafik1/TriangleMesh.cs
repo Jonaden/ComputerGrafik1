@@ -9,7 +9,7 @@ namespace ComputerGrafik1
 {
     internal class TriangleMesh : Mesh
     {
-        protected override uint[] Indices => base.Indices;
+        public override uint[] Indices => base.Indices;
         protected override float[] Vertices => new float[]
          {
             -0.5f, -0.5f, 0.0f, //Bottom-left vertex

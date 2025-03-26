@@ -32,18 +32,34 @@ namespace ComputerGrafik1
             uniforms.Add("texture1", texture1);
             Material mat = new Material("Shaders/shader.vert", "Shaders/shader.frag", uniforms);
 
-            Renderer rend = new Renderer(mat, new TriangleMesh());
-            GameObject triangle = new GameObject(rend, this);
-            gameObjects.Add(triangle);
-            
-            Renderer rend2 = new Renderer(mat, new CubeMesh());
-            GameObject cube = new GameObject(rend2, this);
-            cube.transform.Position = new Vector3(1, 0, 0);
-            gameObjects.Add(cube);
+            //Renderer rend = new Renderer(mat, new TriangleMesh());
+            //GameObject triangle = new GameObject(rend, this);
+            //gameObjects.Add(triangle);
 
-            Renderer rend3 = new Renderer(mat, new SphereMesh());
-            GameObject sphere = new GameObject(rend3, this);
-            sphere.transform.Position = new Vector3(-1, 0, 0);
+            //Renderer rend2 = new Renderer(mat, new CubeMesh());
+            //GameObject cube = new GameObject(rend2, this);
+            //cube.transform.Position = new Vector3(1, 0, 0);
+            //gameObjects.Add(cube);
+
+            //Renderer rend3 = new Renderer(mat, new SphereMesh());
+            //GameObject sphere = new GameObject(rend3, this);
+            //sphere.transform.Position = new Vector3(-1, 0, 0);
+            //gameObjects.Add(sphere);
+
+            Model model = new Model("Models/Gun.fbx");
+
+            Renderer rend4 = new Renderer(mat, model);
+            GameObject modelGO = new GameObject(rend4, this);
+            modelGO.transform.Position = new Vector3(0, 0, 0);
+
+            modelGO.AddComponent<QuadBeheaviour>();
+
+            gameObjects.Add(modelGO);
+
+            Console.WriteLine(modelGO.transform.Position);
+            Console.WriteLine(modelGO.transform.Rotation);
+            Console.WriteLine(modelGO.transform.Scale);
+
             GL.Enable(EnableCap.DepthTest);
             watch.Start();
         }
@@ -57,8 +73,10 @@ namespace ComputerGrafik1
         {
             base.OnRenderFrame(args);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            
             Matrix4 view = Matrix4.CreateTranslation(0.0f, 0, -3f);
             Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(60.0f), (float)Size.X / (float)Size.Y, 0.3f, 1000.0f);
+            
             gameObjects.ForEach(x => x.Draw(view * projection));
             SwapBuffers();
 

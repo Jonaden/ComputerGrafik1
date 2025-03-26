@@ -12,9 +12,9 @@ namespace ComputerGrafik1
     public class Mesh
     {
         protected virtual float[] Vertices { get; set; }
-        protected virtual uint[] Indices { get; set; }
+        public virtual uint[] Indices { get; protected set; }
 
-        int vertexArrayObject;
+        public int vertexArrayObject;
         int elementBufferObject;
         int vertexBufferObject;
 
@@ -35,13 +35,19 @@ namespace ComputerGrafik1
         {
             GenerateBuffers();
         }
+
+        public Mesh(float[] vertices, uint[] indices)
+        {
+            this.Vertices = vertices;
+            this.Indices = indices;
+        }
         protected virtual void GenerateBuffers()
         {
             vertexBufferObject = GL.GenBuffer();
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, (int)vertexBufferObject);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float),
-                vertices, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Length * sizeof(float),
+                Vertices, BufferUsageHint.StaticDraw);
             vertexArrayObject = GL.GenVertexArray();
             GL.BindVertexArray(vertexArrayObject);
 
@@ -52,13 +58,20 @@ namespace ComputerGrafik1
 
             elementBufferObject = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, (int)elementBufferObject);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, Indices.Length * sizeof(uint), Indices, BufferUsageHint.StaticDraw);
         }
 
         public virtual void Draw()
         {
-            GL.BindVertexArray(vertexArrayObject);
-            GL.DrawElements(PrimitiveType.Triangles, indices.Length, DrawElementsType.UnsignedInt, 0);
+            GL.PointSize(10f);
+            GL.DrawArrays(PrimitiveType.Points, 0, Vertices.Length / 5);
+            Console.WriteLine(Vertices[0]);
+            Console.WriteLine(Vertices[1]);
+            Console.WriteLine(Vertices[2]);
+            Console.WriteLine(Vertices[3]);
+            Console.WriteLine(Vertices[4]);
+            GL.DrawElements(PrimitiveType.Triangles, Indices.Length, DrawElementsType.UnsignedInt, 0);
+            GL.BindVertexArray(0);
         }
     }
 }
