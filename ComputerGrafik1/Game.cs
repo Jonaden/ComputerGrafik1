@@ -33,7 +33,7 @@ namespace ComputerGrafik1
             Material mat = new Material("Shaders/shader.vert", "Shaders/shader.frag", uniforms);
             //Renderer rend = new Renderer(mat, new TriangleMesh());
             //Renderer rend2 = new Renderer(mat, new CubeMesh());
-            Renderer rend3 = new Renderer(mat, new CapsuleStetchMesh());
+            Renderer rend3 = new Renderer(mat, new CapsuleStretchMesh());
             //GameObject triangle = new GameObject(rend, this);
             //gameObjects.Add(triangle);
             //GameObject cube = new GameObject(rend2, this);

@@ -9,7 +9,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ComputerGrafik1
 {
-    class CapsuleStetchMesh : Mesh
+    class CapsuleStretchMesh : Mesh
     {
 
         static int vertexArrayObject;
