@@ -14,16 +14,33 @@ namespace ComputerGrafik1
             this.mesh = mesh;
         }
 
-        public Renderer(Material material, Model model)
-        {
-            this.material = material;
-            this.model = model;
-        }
 
-        public void Draw(Matrix4 mvp)
+        public void Draw(in Matrix4 model, in Matrix4 viewProjection, in DirLight dirLight, in PointLight[] pointLights, in Matrix4 lightSpaceMatrix, Vector3 viewPos)
         {
             material.UseShader();
-            material.SetUniform("mvp", mvp);
+            material.SetUniform("model", model);
+            material.SetUniform("viewProjection", viewProjection);
+            material.SetUniform("lightSpaceMatrix", lightSpaceMatrix);
+
+            // Directional light
+            material.SetUniform("dirLight.direction", dirLight.Direction);
+            material.SetUniform("dirLight.ambient", dirLight.Ambient);
+            material.SetUniform("dirLight.diffuse", dirLight.Diffuse);
+            material.SetUniform("dirLight.specular", dirLight.Specular);
+
+            // Point lights
+            for (int i = 0; i < pointLights.Length; i++)
+            {
+                material.SetUniform($"pointLights[{i}].position", pointLights[i].Position);
+                material.SetUniform($"pointLights[{i}].ambient", pointLights[i].Ambient);
+                material.SetUniform($"pointLights[{i}].diffuse", pointLights[i].Diffuse);
+                material.SetUniform($"pointLights[{i}].specular", pointLights[i].Specular);
+                material.SetUniform($"pointLights[{i}].constant", pointLights[i].Constant);
+                material.SetUniform($"pointLights[{i}].linear", pointLights[i].Linear);
+                material.SetUniform($"pointLights[{i}].quadratic", pointLights[i].Quadratic);
+            }
+
+            material.SetUniform("viewPos", viewPos);
             if (mesh != null)
             {
                 mesh.Draw();
@@ -33,5 +50,18 @@ namespace ComputerGrafik1
                 model.Draw();
             }
         }
+        public Renderer(Material material, Model model)
+        {
+            this.material = material;
+            this.model = model;
+        }
+
+
+
+        public void RenderDepth(Shader shader, in Matrix4 model)
+        {
+            shader.SetMatrix("model", model);
+			      mesh.Draw();
+		    }
     }
 }

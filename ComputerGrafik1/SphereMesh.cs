@@ -60,9 +60,9 @@ namespace ComputerGrafik1
                     ny = y * lengthInv;
                     nz = z * lengthInv;
 
-                    listOfNormals.Add(nx);
-                    listOfNormals.Add(ny);
-                    listOfNormals.Add(nz);
+					listofVertices.Add(nx);
+					listofVertices.Add(ny);
+					listofVertices.Add(nz);
 
                     s = (float)j / sectorCount;
                     t = (float)i / stackCount;
@@ -125,12 +125,15 @@ namespace ComputerGrafik1
             GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Length * sizeof(float), Vertices, BufferUsageHint.StaticDraw);
             vertexArrayObject = GL.GenVertexArray();
             GL.BindVertexArray(vertexArrayObject);
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
-            GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
-
+            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 8 * sizeof(float), 0);
+            GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, 8 * sizeof(float), 3 * sizeof(float));
+            GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, 8 * sizeof(float), 6 * sizeof(float));
+            
             // Enable variable 0 in the shader.
             GL.EnableVertexAttribArray(0);
             GL.EnableVertexAttribArray(1);
+            GL.EnableVertexAttribArray(2);
+
 
             elementBufferObject = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, (int)(elementBufferObject));

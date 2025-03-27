@@ -1,5 +1,4 @@
 ﻿using OpenTK.Mathematics;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace ComputerGrafik1
 {
@@ -21,5 +20,20 @@ namespace ComputerGrafik1
 
             return s * rX * rY * rZ * t;
         }
-    }
+
+		public Vector3 GetForwardVector()
+		{
+            Matrix4 transform = CalculateModel();
+			Vector3 forward = Vector3.Normalize(new Vector3(transform.M31, transform.M32, transform.M33));
+
+			return forward;
+		}
+		public Vector3 GetRightVector()
+		{
+			Matrix4 transform = CalculateModel();
+			Vector3 forward = Vector3.Normalize(new Vector3(transform.M11, transform.M12, transform.M13));
+
+			return forward;
+		}
+	}
 }
