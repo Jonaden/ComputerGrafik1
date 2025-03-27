@@ -108,12 +108,12 @@ namespace ComputerGrafik1
                 vertices.Add(transformedPosition.Y);
                 vertices.Add(transformedPosition.Z);
 
-                //Vector3 normal = mesh.Normals[i].ConvertAssimpVector3();
-                //Vector3 transformedNormal = Vector3.TransformNormalInverse(normal, inverseTransform);
-                //vertices.Add(transformedNormal.X);
-                //vertices.Add(transformedNormal.Y);
-                //vertices.Add(transformedNormal.Z);
-                
+                Vector3 normal = mesh.Normals[i].ConvertAssimpVector3();
+                Vector3 transformedNormal = Vector3.TransformNormalInverse(normal, inverseTransform);
+                vertices.Add(transformedNormal.X);
+                vertices.Add(transformedNormal.Y);
+                vertices.Add(transformedNormal.Z);
+
                 Vector2 vec;
                 vec.X = mesh.TextureCoordinateChannels[0][i].X;
                 vec.Y = mesh.TextureCoordinateChannels[0][i].Y;
