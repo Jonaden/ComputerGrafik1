@@ -6,12 +6,12 @@ namespace ComputerGrafik1
     public class Renderer
     {
         public Material material;
-        Mesh mesh;
-        Model model;
+        Mesh _mesh;
+        Model _model;
         public Renderer(Material material, Mesh mesh)
         {
             this.material = material;
-            this.mesh = mesh;
+            this._mesh = mesh;
         }
 
 
@@ -41,19 +41,19 @@ namespace ComputerGrafik1
             }
 
             material.SetUniform("viewPos", viewPos);
-            if (mesh != null)
+            if (_mesh != null)
             {
-                mesh.Draw();
+                _mesh.Draw();
             }
-            if(model != null)
+            if(_model != null)
             {
-                model.Draw();
+                _model.Draw();
             }
         }
         public Renderer(Material material, Model model)
         {
             this.material = material;
-            this.model = model;
+            this._model = model;
         }
 
 
@@ -61,7 +61,14 @@ namespace ComputerGrafik1
         public void RenderDepth(Shader shader, in Matrix4 model)
         {
             shader.SetMatrix("model", model);
-			      mesh.Draw();
-		    }
+			if (_mesh != null)
+			{
+				_mesh.Draw();
+			}
+			if (_model != null)
+			{
+				_model.Draw();
+			}
+		}
     }
 }

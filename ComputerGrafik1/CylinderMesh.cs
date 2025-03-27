@@ -12,6 +12,11 @@ namespace ComputerGrafik1
 		private static int elementBufferObject;
 		private static bool buffersCreated;
 
+		public CylinderMesh()
+		{
+			GenerateBuffers();
+		}
+
 		public override void Draw()
 		{
 			GL.BindVertexArray(vertexArrayObject);
