@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL4;
+using System.Text.RegularExpressions;
 
 namespace ComputerGrafik1
 {
@@ -14,6 +15,11 @@ namespace ComputerGrafik1
         static int vertexArrayObject;
         static int elementBufferObject;
         static int vertexBufferObject;
+
+        public QuadMesh()
+        {
+            GenerateBuffers();
+        }
         protected override float[] Vertices => new float[]
          {
             //Position          Texture coordinates

@@ -23,7 +23,10 @@ namespace ComputerGrafik1
         private List<float> texCoords = new List<float>();
         private List<float> listOfNormals = new List<float>();
 
-        
+        public SphereMesh()
+        {
+            GenerateBuffers();
+        }
 
         float x, y, z, xy;
         float nx, ny, nz;
