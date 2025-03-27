@@ -1,11 +1,4 @@
 ﻿using OpenTK.Mathematics;
-using OpenTK.Windowing.GraphicsLibraryFramework;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.Common;
 
@@ -29,12 +22,29 @@ namespace ComputerGrafik1
             }
             return null;
         }
-        public void AddComponent<T>() where T : Behaviour
-        {
-            behaviours.Add(Activator.CreateInstance(typeof(T), this, gameWindow) as T);
-        }
+		public void AddComponent<T>(params object?[]? args) where T : Behaviour
+		{
+			if (args == null)
+			{
+				behaviours.Add(Activator.CreateInstance(typeof(T), this, gameWindow) as T);
+			}
+			else
+			{
+				int initialParameters = 2;
+				int totalParams = args.Length + initialParameters;
+				object?[]? objects = new object[totalParams];
+				objects[0] = this;
+				objects[1] = gameWindow;
+				for (int i = initialParameters; i < totalParams; i++)
+				{
+					objects[i] = args[i - 2];
+				}
 
-        public GameObject(Renderer renderer, GameWindow gameWindow)
+				behaviours.Add(Activator.CreateInstance(typeof(T), objects) as T);
+			}
+		}
+
+		public GameObject(Renderer renderer, GameWindow gameWindow)
         {
             this.renderer = renderer;
             this.gameWindow = gameWindow;
@@ -49,9 +59,16 @@ namespace ComputerGrafik1
             }
         }
 
-        public void Draw(Matrix4 vp)
+        public void Draw(in Matrix4 viewProjection, in DirLight dirLight, in PointLight[] pointLights, in Matrix4 lightSpaceMatrix, Vector3 viewPos)
         {
-            renderer.Draw(transform.CalculateModel() * vp);
+            if (renderer != null)
+                renderer.Draw(transform.CalculateModel(), viewProjection, dirLight, pointLights, lightSpaceMatrix, viewPos);
+        }
+
+        public void RenderDepth(Shader shader)
+        {
+			if (renderer != null)
+				renderer.RenderDepth(shader, transform.CalculateModel());
         }
     }
 }

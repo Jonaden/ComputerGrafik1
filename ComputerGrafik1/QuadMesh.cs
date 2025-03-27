@@ -17,10 +17,10 @@ namespace ComputerGrafik1
         protected override float[] Vertices => new float[]
          {
             //Position          Texture coordinates
-             0.5f,  0.5f, 0.0f, 1.0f, 1.0f, // top right
-             0.5f, -0.5f, 0.0f, 1.0f, 0.0f, // bottom right
-            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom left
-            -0.5f,  0.5f, 0.0f, 0.0f, 1.0f  // top left
+            -1.0f,  1.0f, 0.0f, 0.0f, 1.0f, // top right
+            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, // bottom right
+            1.0f,  1.0f, 0.0f, 1.0f, 1.0f, // bottom left
+            1.0f, -1.0f, 0.0f, 1.0f, 0.0f // top left
         };
         protected override uint[] Indices => new uint[]
         {
@@ -40,20 +40,22 @@ namespace ComputerGrafik1
             vertexArrayObject = GL.GenVertexArray();
             GL.BindVertexArray(vertexArrayObject);
 
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
             GL.EnableVertexAttribArray(0);
+            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
             GL.EnableVertexAttribArray(1);
             GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
 
-            elementBufferObject = GL.GenBuffer();
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, (int)elementBufferObject);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, Indices.Length * sizeof(uint), Indices, BufferUsageHint.StaticDraw);
+            //elementBufferObject = GL.GenBuffer();
+            //GL.BindBuffer(BufferTarget.ElementArrayBuffer, (int)elementBufferObject);
+            //GL.BufferData(BufferTarget.ElementArrayBuffer, Indices.Length * sizeof(uint), Indices, BufferUsageHint.StaticDraw);
             buffersCreated = true;
         }
         public override void Draw()
         {
             GL.BindVertexArray(vertexArrayObject);
-            GL.DrawElements(PrimitiveType.Triangles, Indices.Length, DrawElementsType.UnsignedInt, 0);
-        }
+            GL.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
+			//GL.BindVertexArray(0);
+			//GL.DrawElements(PrimitiveType.Triangles, Indices.Length, DrawElementsType.UnsignedInt, 0);
+		}
     }
 }

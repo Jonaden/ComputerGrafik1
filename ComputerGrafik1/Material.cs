@@ -47,6 +47,10 @@ namespace ComputerGrafik1
                 shader.SetInt(name, addedTextures);
                 textures.Add(addedTextures, tex);
             }
+            else if (uniform is Vector3 uniformVector3)
+            {
+                shader.SetVector3 (name, uniformVector3);
+            }
             else
             {
                 Console.WriteLine($"Unsupported shader uniform type: ");
@@ -61,6 +65,10 @@ namespace ComputerGrafik1
             {
                 TexWithIndex.Value.Use(TextureUnit.Texture0 + TexWithIndex.Key);
             }
+
+            GL.ActiveTexture(TextureUnit.Texture2);
+            GL.BindTexture(TextureTarget.Texture2D, shader.GetAttribLocation("shadowMap"));
+
             shader.Use();
 
         }

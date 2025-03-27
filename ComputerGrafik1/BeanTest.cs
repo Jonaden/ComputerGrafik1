@@ -167,7 +167,7 @@ namespace ComputerGrafik1
 
 					// texture coordinate
 					vertices.Add((float)j / sectorCount); // s
-					vertices.Add(t);                      // t
+					vertices.Add(t * 0.5f);                      // t
 				}
 			}
 			baseCenterIndex = (vertices.Count / 5);
