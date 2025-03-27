@@ -29,9 +29,9 @@ namespace ComputerGrafik1
 			Ambient = new Vector3(0.05f);
 			Diffuse = new Vector3(0.8f);
 			Specular = new Vector3(1.0f);
-			Constant = 1.0f;
-			Linear = 0.09f;
-			Quadratic = 0.032f;
+			Constant = 1f;
+			Linear = 0.0009f;
+			Quadratic = 0.000032f;
 		}
 	};
 

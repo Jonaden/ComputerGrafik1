@@ -41,7 +41,49 @@ public class Shader
         GL.DeleteShader(vertexShader);
 
     }
-    private void CompileShader(int shader)
+
+	public Shader(string vertexPath, string fragmentPath, string geometryPath)
+	{
+
+		string vertexSource = File.ReadAllText(vertexPath);
+		string fragmentSource = File.ReadAllText(fragmentPath);
+		string geometrySource = File.ReadAllText(geometryPath);
+
+		int vertexShader = GL.CreateShader(ShaderType.VertexShader);
+		GL.ShaderSource(vertexShader, vertexSource);
+		int fragmentShader = GL.CreateShader(ShaderType.FragmentShader);
+		GL.ShaderSource(fragmentShader, fragmentSource);
+        int geometryShader = GL.CreateShader(ShaderType.GeometryShader);
+        GL.ShaderSource(geometryShader, geometrySource);
+
+		CompileShader(vertexShader);
+		CompileShader(fragmentShader);
+        CompileShader(geometryShader);
+
+		// These three shaders must then be merged into a shader program, which can then be used by OpenGL.
+		// To do this, create a program...
+		Handle = GL.CreateProgram();
+
+		// Attach both shaders...
+		GL.AttachShader(Handle, vertexShader);
+		GL.AttachShader(Handle, fragmentShader);
+		GL.AttachShader(Handle, geometryShader);
+
+		// And then link them together.
+		LinkProgram(Handle);
+
+		// When the shader program is linked, it no longer needs the individual shaders attached to it; the compiled code is copied into the shader program.
+		// Detach them, and then delete them.
+		GL.DetachShader(Handle, vertexShader);
+		GL.DetachShader(Handle, fragmentShader);
+		GL.DetachShader(Handle, geometryShader);
+		GL.DeleteShader(fragmentShader);
+		GL.DeleteShader(vertexShader);
+		GL.DeleteShader(geometryShader);
+
+	}
+
+	private void CompileShader(int shader)
     {
         GL.CompileShader(shader);
 
