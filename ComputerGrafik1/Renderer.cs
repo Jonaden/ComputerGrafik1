@@ -7,11 +7,13 @@ namespace ComputerGrafik1
     {
         public Material material;
         Mesh mesh;
+        Model model;
         public Renderer(Material material, Mesh mesh)
         {
             this.material = material;
             this.mesh = mesh;
         }
+
 
         public void Draw(in Matrix4 model, in Matrix4 viewProjection, in DirLight dirLight, in PointLight[] pointLights, in Matrix4 lightSpaceMatrix, Vector3 viewPos)
         {
@@ -39,13 +41,27 @@ namespace ComputerGrafik1
             }
 
             material.SetUniform("viewPos", viewPos);
-            mesh.Draw();
+            if (mesh != null)
+            {
+                mesh.Draw();
+            }
+            if(model != null)
+            {
+                model.Draw();
+            }
         }
+        public Renderer(Material material, Model model)
+        {
+            this.material = material;
+            this.model = model;
+        }
+
+
 
         public void RenderDepth(Shader shader, in Matrix4 model)
         {
             shader.SetMatrix("model", model);
-			mesh.Draw();
-		}
+			      mesh.Draw();
+		    }
     }
 }

@@ -22,7 +22,7 @@ namespace ComputerGrafik1
             1.0f,  1.0f, 0.0f, 1.0f, 1.0f, // bottom left
             1.0f, -1.0f, 0.0f, 1.0f, 0.0f // top left
         };
-        protected override uint[] Indices => new uint[]
+        public override uint[] Indices => new uint[]
         {
             0, 1, 3,   // first triangle
             1, 2, 3    // second triangle

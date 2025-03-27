@@ -56,6 +56,7 @@ namespace ComputerGrafik1
 			ImageTexture texture0 = new ImageTexture("Textures/container2.png");
 			ImageTexture texture1 = new ImageTexture("Textures/container2_specular.png");
             Dictionary<string, object> uniforms = new Dictionary<string, object>();
+
             uniforms.Add("material.diffuse", texture0);
             uniforms.Add("shadowMap", depthMap);
             uniforms.Add("material.specular", texture1);
@@ -119,6 +120,7 @@ namespace ComputerGrafik1
 
 			}
 
+
             watch.Start();
             CursorState = CursorState.Grabbed;
 			GL.Enable(EnableCap.DepthTest);
@@ -155,6 +157,7 @@ namespace ComputerGrafik1
             GL.Viewport(0, 0, 800, 600);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
+
 			gameObjects.ForEach(x => x.Draw(camera.GetViewProjection(), _dirLight, _pointLights, lightSpaceMatrix, camera.GetPosition()));
 
             // debug
@@ -165,6 +168,7 @@ namespace ComputerGrafik1
 
             QuadMesh quadMesh = new QuadMesh();
             //quadMesh.Draw();
+
 
             SwapBuffers();
 
