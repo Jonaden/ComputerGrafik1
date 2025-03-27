@@ -3,6 +3,7 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace ComputerGrafik1
 {
+	// This is just another capsule primitive
 	public class BeanTest : Mesh
 	{
 		// Inherited from Mesh
@@ -16,6 +17,7 @@ namespace ComputerGrafik1
 		public BeanTest(Game window)
 		{
 			this.window = window;
+			GenerateBuffers();
 		}
 
 		public override void Draw()
@@ -26,8 +28,6 @@ namespace ComputerGrafik1
 				t += 0.1f;
 			if (input.IsKeyDown(Keys.S))
 				t -= 0.1f;
-
-			float h = MathF.Sin(t) + 1;
 
 			Vertices = GetBeanVertices(1, t, 16, 8, out int baseCenterIndex).ToArray();
 			GL.BindVertexArray(vertexArrayObject);
@@ -95,11 +95,9 @@ namespace ComputerGrafik1
 			float stackStep = MathF.PI / stackCount;
 			float sectorAngle, stackAngle;
 
-
 			List<float> listofVertices = new List<float>();
 
-			int stackStart;
-			int stackEnd;
+			int stackStart, stackEnd;
 			float zOffset;
 
 			if (top)
@@ -166,12 +164,15 @@ namespace ComputerGrafik1
 					vertices.Add(h);                       // vz
 
 					// texture coordinate
-					vertices.Add((float)j / sectorCount); // s
-					vertices.Add(t * 0.5f);                      // t
+					vertices.Add((float)j / sectorCount);  // s
+					vertices.Add(t * 0.5f);                // t
 				}
 			}
-			baseCenterIndex = (vertices.Count / 5);
 
+			baseCenterIndex = (vertices.Count / 5);		   // used later for indices
+
+
+			// top and bottom half-spheres
 			List<float> topVerts = GetVerticesHalfSphere(radius, height, sectorCount, stackCount, true);
 			List<float> bottomVerts = GetVerticesHalfSphere(radius, height, sectorCount, stackCount, false);
 
@@ -204,8 +205,7 @@ namespace ComputerGrafik1
 				indices.Add(k2 + 1);
 			}
 
-			// indices for the top and bottom half-spheres
-
+			// indices for the top half-sphere
 			for (int i = 0; i < stackCount / 2; i++)
 			{
 				k1 = (i * (sectorCount + 1)) + baseCenterIndex;
@@ -228,7 +228,7 @@ namespace ComputerGrafik1
 					}
 				}
 			}
-
+			// indices for the bottom half-sphere
 			for (int i = (stackCount / 2) + 1; i <= stackCount; i++)
 			{
 				k1 = (i * (sectorCount + 1)) + baseCenterIndex;

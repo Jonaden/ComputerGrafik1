@@ -49,10 +49,12 @@ namespace ComputerGrafik1
             this.renderer = renderer;
             this.gameWindow = gameWindow;
             transform = new Transform();
-        }
+			transform.CalculateModel();
+		}
 
         public void Update(FrameEventArgs args)
         {
+            transform.CalculateModel();
             foreach (Behaviour behaviour in behaviours)
             {
                 behaviour.Update(args);
@@ -62,13 +64,13 @@ namespace ComputerGrafik1
         public void Draw(in Matrix4 viewProjection, in DirLight dirLight, in PointLight[] pointLights, in Matrix4 lightSpaceMatrix, Vector3 viewPos)
         {
             if (renderer != null)
-                renderer.Draw(transform.CalculateModel(), viewProjection, dirLight, pointLights, lightSpaceMatrix, viewPos);
+                renderer.Draw(transform.TransformMatrix, viewProjection, dirLight, pointLights, lightSpaceMatrix, viewPos);
         }
 
         public void RenderDepth(Shader shader)
         {
 			if (renderer != null)
-				renderer.RenderDepth(shader, transform.CalculateModel());
+				renderer.RenderDepth(shader, transform.TransformMatrix);
         }
     }
 }
