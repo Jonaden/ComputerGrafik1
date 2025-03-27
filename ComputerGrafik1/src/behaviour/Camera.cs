@@ -31,7 +31,7 @@ namespace ComputerGrafik1
 		{
 			//Matrix4 view = Matrix4.LookAt(gameObject.transform.Position, gameObject.transform.Position + front, up);
 			Matrix4 view;
-			Matrix4.Invert(gameObject.transform.CalculateModel(), out view);
+			Matrix4.Invert(gameObject.transform.TransformMatrix, out view);
 			Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(FOV), aspectX / aspectY, near, far);
 			return view * projection;
 		}

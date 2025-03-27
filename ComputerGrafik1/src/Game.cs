@@ -55,6 +55,7 @@ namespace ComputerGrafik1
 
 			ImageTexture texture0 = new ImageTexture("Textures/container2.png");
 			ImageTexture texture1 = new ImageTexture("Textures/container2_specular.png");
+			ImageTexture texture3 = new ImageTexture("Textures/container2_specular.png");
             Dictionary<string, object> uniforms = new Dictionary<string, object>();
 
             uniforms.Add("material.diffuse", texture0);
@@ -117,7 +118,7 @@ namespace ComputerGrafik1
 			    GameObject light = new GameObject(rend1, this);
 				light.transform.Position = pointLightPositions[i];
 				light.transform.Scale = new Vector3(0.25f);
-				//gameObjects.Add(light);
+				gameObjects.Add(light);
 
 			}
 
