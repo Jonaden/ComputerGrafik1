@@ -79,19 +79,20 @@ namespace ComputerGrafik1
 			    new Vector3(-1.3f, 1.0f, -1.5f)
 		    };
 
+            Model gun = new Model("Models/gun2.fbx");
 
-
-		    Renderer rend = new Renderer(mat, new CylinderMesh());
+		    Renderer rend = new Renderer(mat, gun);
             for (int i = 0; i < cubePositions.Length; i++)
             {
                 GameObject cube = new GameObject(rend, this);
                 cube.transform.Position = cubePositions[i];
                 gameObjects.Add(cube);
 
-                
+
             }
 
-			GameObject cube1 = new GameObject(rend, this);
+		    Renderer boxRend = new Renderer(mat, new CubeMesh());
+            GameObject cube1 = new GameObject(boxRend, this);
             cube1.transform.Scale = new Vector3(30f, 1.0f, 30f);
             cube1.transform.Position = new Vector3(0.0f, -5.0f, -4.0f);
 			gameObjects.Add(cube1);
