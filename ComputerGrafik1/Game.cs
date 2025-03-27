@@ -46,11 +46,11 @@ namespace ComputerGrafik1
             //sphere.transform.Position = new Vector3(-1, 0, 0);
             //gameObjects.Add(sphere);
 
-            Model model = new Model("Models/BP.fbx");
+            Model model = new Model("Models/Gun.fbx");
 
             Renderer rend4 = new Renderer(mat, model);
             GameObject modelGO = new GameObject(rend4, this);
-            modelGO.transform.Position = new Vector3(0, 0, -100);
+            modelGO.transform.Position = new Vector3(0, 0, -2);
 
             modelGO.AddComponent<QuadBeheaviour>();
 

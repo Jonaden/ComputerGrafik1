@@ -10,7 +10,6 @@ namespace ComputerGrafik1
 {
     public class ModelMesh : Mesh
     {
-        static int vertexArrayObject;
         private int indicesCount;
 
         public ModelMesh(float[] vertices, uint[] indices)
@@ -40,7 +39,7 @@ namespace ComputerGrafik1
             GL.BindVertexArray(0);
         }
 
-        public virtual void Draw()
+        public override void Draw()
         {
             GL.BindVertexArray(vertexArrayObject);
             GL.DrawElements(PrimitiveType.Triangles, indicesCount, DrawElementsType.UnsignedInt, 0);
