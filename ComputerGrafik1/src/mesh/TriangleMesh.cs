@@ -19,7 +19,11 @@ namespace ComputerGrafik1
         static int vertexArrayObject;
         static int vertexBufferObject;
         private static bool buffersCreated;
-
+        
+        public TriangleMesh()
+        {
+            GenerateBuffers();
+        }
         protected override void GenerateBuffers()
         {
 
