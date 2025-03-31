@@ -66,11 +66,6 @@ namespace ComputerGrafik1
         {
             GL.PointSize(10f);
             GL.DrawArrays(PrimitiveType.Points, 0, Vertices.Length / 5);
-            Console.WriteLine(Vertices[0]);
-            Console.WriteLine(Vertices[1]);
-            Console.WriteLine(Vertices[2]);
-            Console.WriteLine(Vertices[3]);
-            Console.WriteLine(Vertices[4]);
             GL.DrawElements(PrimitiveType.Triangles, Indices.Length, DrawElementsType.UnsignedInt, 0);
             GL.BindVertexArray(0);
         }

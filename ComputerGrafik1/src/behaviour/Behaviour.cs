@@ -9,6 +9,7 @@ namespace ComputerGrafik1
     {
         protected GameObject gameObject;
         protected Game window;
+        public Transform Transform { get => gameObject.Transform; }
         public Behaviour(GameObject gameObject, Game window)
         {
             this.gameObject = gameObject;

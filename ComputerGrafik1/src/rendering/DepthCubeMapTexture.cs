@@ -9,13 +9,13 @@ namespace ComputerGrafik1
 {
 	public class DepthCubeMapTexture : Texture
 	{
-		public DepthCubeMapTexture(int depthMapFBO)
+		public DepthCubeMapTexture(int depthMapFBO, int shadowWidth, int shadowHeight)
 		{
 			_handle = GL.GenTexture();
 			GL.BindTexture(TextureTarget.TextureCubeMap, _handle);
 
 			for (int i = 0; i < 6; ++i)
-				GL.TexImage2D(TextureTarget.TextureCubeMapPositiveX + i, 0, PixelInternalFormat.DepthComponent, 1024, 1024, 0, PixelFormat.DepthComponent, PixelType.Float, IntPtr.Zero);
+				GL.TexImage2D(TextureTarget.TextureCubeMapPositiveX + i, 0, PixelInternalFormat.DepthComponent, shadowWidth, shadowHeight, 0, PixelFormat.DepthComponent, PixelType.Float, IntPtr.Zero);
 			GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
 			GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureMagFilter, (int)TextureMinFilter.Nearest);
 			GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);

@@ -7,8 +7,8 @@ namespace ComputerGrafik1
 {
     public class GameObject
     {
-        public Transform transform;
-        public Renderer renderer;
+        public Transform Transform;
+        public Renderer Renderer;
 
         List<Behaviour> behaviours = new List<Behaviour>();
 
@@ -46,31 +46,31 @@ namespace ComputerGrafik1
 
 		public GameObject(Renderer renderer, GameWindow gameWindow)
         {
-            this.renderer = renderer;
+            this.Renderer = renderer;
             this.gameWindow = gameWindow;
-            transform = new Transform();
-			transform.CalculateModel();
+            Transform = new Transform();
+			Transform.CalculateModel();
 		}
 
         public void Update(FrameEventArgs args)
         {
-            transform.CalculateModel();
             foreach (Behaviour behaviour in behaviours)
             {
                 behaviour.Update(args);
             }
+            Transform.CalculateModel();
         }
 
-        public void Draw(in Matrix4 viewProjection, in DirLight dirLight, in PointLight[] pointLights, in Matrix4 lightSpaceMatrix, Vector3 viewPos)
+        public void Draw(in Matrix4 viewProjection, in DirLight dirLight, in SpotLight spotLight, in PointLight[] pointLights, in Matrix4 lightSpaceMatrix, Vector3 viewPos)
         {
-            if (renderer != null)
-                renderer.Draw(transform.TransformMatrix, viewProjection, dirLight, pointLights, lightSpaceMatrix, viewPos);
+            if (Renderer != null)
+                Renderer.Draw(Transform.TransformMatrix, viewProjection, dirLight, spotLight, pointLights, lightSpaceMatrix, viewPos);
         }
 
         public void RenderDepth(Shader shader)
         {
-			if (renderer != null)
-				renderer.RenderDepth(shader, transform.TransformMatrix);
+			if (Renderer != null)
+				Renderer.RenderDepth(shader, Transform.TransformMatrix);
         }
     }
 }

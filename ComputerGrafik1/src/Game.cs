@@ -18,8 +18,6 @@ namespace ComputerGrafik1
             settings = nativeWindowSettings;
         }
 
-        Stopwatch watch = new Stopwatch();
-
 		float _time;
 
         private PointLight[] _pointLights = new PointLight[4];
@@ -28,97 +26,89 @@ namespace ComputerGrafik1
         {
             Direction = new Vector3(-0.2f, -1.0f, -0.3f),
             Ambient = new Vector3(0.1f),
-            Diffuse = new Vector3(0.2f, 0.0f, 0.2f),
+            Diffuse = new Vector3(0.2f, 0.2f, 0.2f),
             Specular = new Vector3(1.0f)
         };
 
-        Shader debugDepthQuad;
+		SpotLight _spotLight = new SpotLight
+		{
+			Position = new Vector3(-3.0f, 10.0f, 0.0f),
+			Direction = new Vector3(0.5f, -1.0f, 0.1f)
+		};
 
 
-		Shader simpleDepthShader_dir;
-		Shader simpleDepthShader_point;
+		Shader _simpleDepthShader_dir;
+		Shader _simpleDepthShader_point;
 		const int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 
         int depthMapFBO_dir;
-		DepthTexture depthMap;
+		DepthTexture _depthMap;
 
-		int depthMapFBO_point;
-		DepthCubeMapTexture depthCubemap;
+		int _depthMapFBO_point;
+		DepthCubeMapTexture _depthCubemap;
 
-		float near_plane = 0.1f;
-		float far_plane = 50.0f;
+		float _nearPlane = 0.1f;
+		float _farPlane = 50.0f;
 
-		List<GameObject> gameObjects = new List<GameObject>();
-        Camera camera;
+		List<GameObject> _gameObjects = new List<GameObject>();
+        Camera _camera;
+
+		Transform _pointLightTransform;
+
         protected override void OnLoad()
         {
             base.OnLoad();
-            debugDepthQuad = new Shader("Shaders/shaderDebug.vert", "Shaders/shaderDebug.frag");
-			debugDepthQuad.Use();
-			debugDepthQuad.SetInt("depthMap", 0);
 
-			simpleDepthShader_dir = new Shader("Shaders/ShaderSDM.vert", "Shaders/ShaderSDM.frag");
-			simpleDepthShader_point = new Shader("Shaders/pointShadowDepth.vert", "Shaders/pointShadowDepth.frag", "Shaders/pointShadowDepth.geom");
+			_simpleDepthShader_dir = new Shader("Shaders/DirShadowDepth.vert", "Shaders/DirShadowDepth.frag");
+			_simpleDepthShader_point = new Shader("Shaders/pointShadowDepth.vert", "Shaders/pointShadowDepth.frag", "Shaders/pointShadowDepth.geom");
 
 			depthMapFBO_dir = GL.GenFramebuffer();
-			depthMap = new DepthTexture(depthMapFBO_dir);
+			_depthMap = new DepthTexture(depthMapFBO_dir, SHADOW_WIDTH, SHADOW_HEIGHT);
 
-            depthMapFBO_point = GL.GenFramebuffer();
-			depthCubemap = new DepthCubeMapTexture(depthMapFBO_point);
+            _depthMapFBO_point = GL.GenFramebuffer();
+			_depthCubemap = new DepthCubeMapTexture(_depthMapFBO_point, SHADOW_WIDTH, SHADOW_HEIGHT);
 
 
-			ImageTexture texture0 = new ImageTexture("Textures/container2.png");
-			ImageTexture texture1 = new ImageTexture("Textures/container2_specular.png");
-			ImageTexture texture3 = new ImageTexture("Textures/container2_specular.png");
+			ImageTexture texture_diffuse = new ImageTexture("Textures/container2.png");
+			ImageTexture texture_specular = new ImageTexture("Textures/container2_specular.png");
+			ImageTexture texture_normal = new ImageTexture("Textures/brickwall_normal.jpg");
             Dictionary<string, object> uniforms = new Dictionary<string, object>();
 
-            uniforms.Add("material.diffuse", texture0);
-            uniforms.Add("shadowMap", depthMap);
-            uniforms.Add("depthMap", depthCubemap);
-            uniforms.Add("material.specular", texture1);
+            uniforms.Add("material.diffuse", texture_diffuse);
+            uniforms.Add("material.specular", texture_specular);
+            uniforms.Add("material.normal", texture_normal);
 			uniforms.Add("material.shininess", 32.0f);
-			uniforms.Add("far_plane", far_plane);
-            Material mat = new Material("Shaders/shaderLit.vert", "Shaders/shaderLit.frag", uniforms);
-            Material mat1 = new Material("Shaders/shaderLit.vert", "Shaders/shaderBasic.frag", []);
+            uniforms.Add("shadowMap", _depthMap);
+            uniforms.Add("depthMap", _depthCubemap);
+			uniforms.Add("far_plane", _farPlane);
+            Material mat_Lit = new Material("Shaders/shaderLit.vert", "Shaders/shaderLit.frag", uniforms);
+            Material mat_Unlit = new Material("Shaders/shaderLit.vert", "Shaders/shaderBasic.frag", []);
 
 
-			Vector3[] cubePositions =
-		    {
-			    new Vector3(0.0f, 0.0f, 0.0f),
-			    new Vector3(2.0f, 5.0f, -15.0f),
-			    new Vector3(-1.5f, -2.2f, -2.5f),
-			    new Vector3(-3.8f, -2.0f, -12.3f),
-			    new Vector3(2.4f, -0.4f, -3.5f),
-			    new Vector3(-1.7f, 3.0f, -7.5f),
-			    new Vector3(1.3f, -2.0f, -2.5f),
-			    new Vector3(1.5f, 2.0f, -2.5f),
-			    new Vector3(1.5f, 0.2f, -1.5f),
-			    new Vector3(-1.3f, 1.0f, -1.5f)
-		    };
+            Model gunModel = new Model("Models/gun2.fbx");
+		    Renderer gunRend = new Renderer(mat_Lit, gunModel);
+            GameObject gunGO = new GameObject(gunRend, this);
+			gunGO.Transform.Position = new Vector3(0.0f);
+            _gameObjects.Add(gunGO);
 
-            Model gun = new Model("Models/gun2.fbx");
 
-		    Renderer rend = new Renderer(mat, gun);
-            for (int i = 0; i < cubePositions.Length; i++)
+		    Renderer boxRend = new Renderer(mat_Lit, new CubeMesh());
+            for (int i = -10; i < 10; i++)
             {
-                GameObject cube = new GameObject(rend, this);
-                cube.transform.Position = cubePositions[i];
-                gameObjects.Add(cube);
-
+				for (int j = -10; j < 10; j++)
+				{
+					GameObject cube = new GameObject(boxRend, this);
+					cube.Transform.Position = new Vector3(i, -2, j);
+					_gameObjects.Add(cube);
+				}
 
             }
 
-		    Renderer boxRend = new Renderer(mat, new CubeMesh());
-            GameObject cube1 = new GameObject(boxRend, this);
-            cube1.transform.Scale = new Vector3(30f, 1.0f, 30f);
-            cube1.transform.Position = new Vector3(0.0f, -5.0f, -4.0f);
-			gameObjects.Add(cube1);
-
 			GameObject cam = new GameObject(null, this);
 			cam.AddComponent<Camera>(60.0f, (float)Size.X, (float)Size.Y, 0.3f, 1000.0f);
-			camera = cam.GetComponent<Camera>();
+			_camera = cam.GetComponent<Camera>();
 			cam.AddComponent<CameraMovementBehaviour>();
-			gameObjects.Add(cam);
+			_gameObjects.Add(cam);
 
 			Vector3[] pointLightPositions = {
 			new Vector3( 0.7f,  1.2f,   2.0f),
@@ -126,23 +116,22 @@ namespace ComputerGrafik1
 			new Vector3(-4.0f,  2.0f, -12.0f),
 			new Vector3( 0.0f,  0.0f,  -3.0f)};
 
-			Renderer rend1 = new Renderer(mat1, new CubeMesh());
-			for (int i = 0; i < _pointLights.Length; i++)
+			Renderer rendLight = new Renderer(mat_Unlit, new CubeMesh(), false);
+			for (int i = 0; i < 1; i++)
 			{
 				_pointLights[i] = new PointLight(pointLightPositions[i]);
 
-			    GameObject light = new GameObject(rend1, this);
-				light.transform.Position = pointLightPositions[i];
-				light.transform.Scale = new Vector3(0.25f);
-				//gameObjects.Add(light);
+			    GameObject light = new GameObject(rendLight, this);
+				light.Transform.Position = pointLightPositions[i];
+				light.Transform.Scale = new Vector3(0.25f);
+				_gameObjects.Add(light);
+				_pointLightTransform = light.Transform;
 
 			}
 
-
-            watch.Start();
             CursorState = CursorState.Grabbed;
 			GL.Enable(EnableCap.DepthTest);
-			//GL.Enable(EnableCap.CullFace);
+			GL.Enable(EnableCap.CullFace);
         }
 
         protected override void OnUnload()
@@ -156,38 +145,34 @@ namespace ComputerGrafik1
 
 			_time += (float)args.Time;
 
-            GL.ClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+            GL.ClearColor(clearColor);
 			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-			Vector3 camPos = new Vector3(0.0f, 0.0f, 3.0f);
+			GL.CullFace(TriangleFace.Front);
 
 
-			// Dir Shadows -----------------------------------------------------------------------------------------------------------------------
+			// Directional/SpotLight Shadows ------------------------------------------------------------------------------------------------------------------
 			// 0. Create depth texture transformation and matrices
-			Matrix4 lightProjection = Matrix4.CreateOrthographicOffCenter(-20.0f, 20.0f, -20, 20, near_plane, far_plane);
-			//Matrix4 lightProjection = Matrix4.CreatePerspectiveOffCenter(-2f, 2f, -2f, 2f, 1f, 50f);
-			Matrix4 lightView = Matrix4.LookAt(new Vector3(0.8f, 4.0f, 1.2f), new Vector3(0.0f), new Vector3(0.0f, 1.0f, 0.0f));
+			//Matrix4 lightProjection = Matrix4.CreateOrthographicOffCenter(-10.0f, 10.0f, -10, 10, _nearPlane, _farPlane);											  // for directional light shadows
+			Matrix4 lightProjection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(90.0f), SHADOW_WIDTH / SHADOW_HEIGHT, _nearPlane, _farPlane);  // for Spotlight shadows
+			Matrix4 lightView = Matrix4.LookAt(new Vector3(_spotLight.Position), new Vector3(_spotLight.Position + _spotLight.Direction), new Vector3(0.0f, 1.0f, 0.0f));
 			Matrix4 lightSpaceMatrix = lightView * lightProjection;
 
-            // 1. render from light's POV
-            depthMap.Use(TextureUnit.Texture0);
-			simpleDepthShader_dir.Use();
-            simpleDepthShader_dir.SetMatrix("lightSpaceMatrix", lightSpaceMatrix);
+			// 1. render from light's POV
+			_depthMap.Use(TextureUnit.Texture0);
+			_simpleDepthShader_dir.Use();
+            _simpleDepthShader_dir.SetMatrix("lightSpaceMatrix", lightSpaceMatrix);
 			GL.Viewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, depthMapFBO_dir);
 			GL.Clear(ClearBufferMask.DepthBufferBit);
-			gameObjects.ForEach(x => x.RenderDepth(simpleDepthShader_dir));
+			_gameObjects.ForEach(x => x.RenderDepth(_simpleDepthShader_dir));
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
 
-			GL.Viewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-
-			// Point Shadows ---------------------------------------------------------------------------------------------------------------------
+			
+			// Point Shadows ---------------------------------------------------------------------------------------------------------------------------------
 			// 0. create depth cubemap transformation matrices
-			Matrix4 shadowProj = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(90.0f), SHADOW_WIDTH / SHADOW_HEIGHT, near_plane, far_plane);
-			//Matrix4 shadowProj = Matrix4.CreatePerspectiveOffCenter(-20f, 20f, -20f, 20f, near_plane, far_plane);
-			_pointLights[0].Position = new Vector3(_pointLights[0].Position.X, _pointLights[0].Position.Y, MathF.Sin(_time));
+			Matrix4 shadowProj = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(90.0f), SHADOW_WIDTH / SHADOW_HEIGHT, _nearPlane, _farPlane);
 			List<Matrix4> shadowTransforms = new List<Matrix4>();
-            Vector3 lightPos = _pointLights[0].Position;                        
+            Vector3 lightPos = _pointLightTransform.Position;                        
 			shadowTransforms.Add(Matrix4.LookAt(lightPos, lightPos + new Vector3(1.0f, 0.0f, 0.0f),  new Vector3(0.0f, -1.0f,  0.0f)) * shadowProj);
 			shadowTransforms.Add(Matrix4.LookAt(lightPos, lightPos + new Vector3(-1.0f, 0.0f, 0.0f), new Vector3(0.0f, -1.0f,  0.0f)) * shadowProj);
 			shadowTransforms.Add(Matrix4.LookAt(lightPos, lightPos + new Vector3(0.0f, 1.0f, 0.0f),  new Vector3(0.0f,  0.0f,  1.0f)) * shadowProj);
@@ -196,33 +181,26 @@ namespace ComputerGrafik1
 			shadowTransforms.Add(Matrix4.LookAt(lightPos, lightPos + new Vector3(0.0f, 0.0f, -1.0f), new Vector3(0.0f, -1.0f,  0.0f)) * shadowProj);
 
             // 1. Render scene to depth cubemap
-			GL.BindFramebuffer(FramebufferTarget.Framebuffer, depthMapFBO_point);
+			GL.BindFramebuffer(FramebufferTarget.Framebuffer, _depthMapFBO_point);
 			GL.Clear(ClearBufferMask.DepthBufferBit);
-			simpleDepthShader_point.Use();
+			_simpleDepthShader_point.Use();
 			for (int i = 0; i < 6; i++)
-				simpleDepthShader_point.SetMatrix($"shadowMatrices[{i}]", shadowTransforms[i]);
-			simpleDepthShader_point.SetFloat("far_plane", far_plane);
-			simpleDepthShader_point.SetVector3("lightPos", lightPos);
-			gameObjects.ForEach(x => x.RenderDepth(simpleDepthShader_point));
+				_simpleDepthShader_point.SetMatrix($"shadowMatrices[{i}]", shadowTransforms[i]);
+			_simpleDepthShader_point.SetFloat("far_plane", _farPlane);
+			_simpleDepthShader_point.SetVector3("lightPos", lightPos);
+			_gameObjects.ForEach(x => x.RenderDepth(_simpleDepthShader_point));
 			GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
 
 			// reset viewport
-			GL.Viewport(0, 0, 800, 600);
+			GL.CullFace(TriangleFace.Back);
+			GL.Viewport(0, 0, Size.X, Size.Y);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-			gameObjects.ForEach(x => x.Draw(camera.GetViewProjection(), _dirLight, _pointLights, lightSpaceMatrix, camera.GetPosition()));
-
-            // debug for dir shadows
-            debugDepthQuad.Use();
-            debugDepthQuad.SetFloat("near_plane", near_plane);
-            debugDepthQuad.SetFloat("far_plane", far_plane);
-            depthMap.Use(TextureUnit.Texture0);
-
-            QuadMesh quadMesh = new QuadMesh();
-            //quadMesh.Draw();
+			// render scene as normal
+			_gameObjects.ForEach(x => x.Draw(_camera.GetViewProjection(), _dirLight, _spotLight, _pointLights, lightSpaceMatrix, _camera.Transform.Position));
 
 
-            SwapBuffers();
+			SwapBuffers();
 
         }
 
@@ -236,8 +214,28 @@ namespace ComputerGrafik1
         protected override void OnUpdateFrame(FrameEventArgs args)
         {
             base.OnUpdateFrame(args);
-            gameObjects.ForEach(x => x.Update(args));
-        }
+            _gameObjects.ForEach(x => x.Update(args));
+
+			//Vector3 offset = camera.Transform.GetForwardVector() * 0.5f + new Vector3(0.0f, -0.1f, 0.0f);
+			//_spotLight.Position = camera.Transform.Position + offset;
+			//_spotLight.Direction = camera.Transform.GetForwardVector();
+
+			_pointLightTransform.Position = new Vector3(MathF.Sin(_time * 0.4f) * 5f, MathF.Sin(_time * 0.2f) + 2, MathF.Cos(_time * 0.4f) * 2f);
+			_pointLights[0].Position = _pointLightTransform.Position;
+
+			KeyboardState input = KeyboardState;
+			MouseState mouse = MouseState;
+
+			if (input.IsKeyPressed(Keys.Escape) && CursorState == CursorState.Grabbed)
+				CursorState = CursorState.Normal;
+
+			Vector2i mousePos = new Vector2i((int)mouse.X, (int)mouse.Y);
+			if (mouse.IsButtonPressed(MouseButton.Left) && ClientRectangle.ContainsExclusive(mousePos) && CursorState == CursorState.Normal)
+			{
+				CursorState = CursorState.Grabbed;
+			}
+			
+		}
 
 	}
 }

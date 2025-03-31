@@ -21,14 +21,14 @@ namespace ComputerGrafik1
             elapsedTime += (float)args.Time;
             if (input.IsKeyDown(Keys.Left))
             {
-                gameObject.transform.Position.X -= movementSpeed * (float)args.Time;
+                gameObject.Transform.Position.X -= movementSpeed * (float)args.Time;
 
             }
             if (input.IsKeyDown(Keys.Right))
             {
-                gameObject.transform.Position.X += movementSpeed * (float)args.Time;
+                gameObject.Transform.Position.X += movementSpeed * (float)args.Time;
             }
-            gameObject.renderer.material.SetUniform("theta", elapsedTime);
+            gameObject.Renderer.Material.SetUniform("theta", elapsedTime);
         }
     }
 }

@@ -5,42 +5,65 @@ namespace ComputerGrafik1
 {
     public class Renderer
     {
-        public Material material;
+        public bool DepthTest = true;
+        public Material Material;
         Mesh _mesh;
         Model _model;
-        public Renderer(Material material, Mesh mesh)
+        public Renderer(Material material, Mesh mesh, bool depthTest = true)
         {
-            this.material = material;
-            this._mesh = mesh;
-        }
+            Material = material;
+            _mesh = mesh;
+			DepthTest = depthTest;
+
+		}
+        public Renderer(Material material, Model model, bool depthTest = true)
+        {
+            Material = material;
+            _model = model;
+			DepthTest = depthTest;
+		}
 
 
-        public void Draw(in Matrix4 model, in Matrix4 viewProjection, in DirLight dirLight, in PointLight[] pointLights, in Matrix4 lightSpaceMatrix, Vector3 viewPos)
+        public void Draw(in Matrix4 model, in Matrix4 viewProjection, in DirLight dirLight, in SpotLight spotLight, in PointLight[] pointLights, in Matrix4 lightSpaceMatrix, Vector3 viewPos)
         {
-            material.UseShader();
-            material.SetUniform("model", model);
-            material.SetUniform("viewProjection", viewProjection);
-            material.SetUniform("lightSpaceMatrix", lightSpaceMatrix);
+            Material.UseShader();
+            Material.SetUniform("model", model);
+            Material.SetUniform("viewProjection", viewProjection);
+            Material.SetUniform("lightSpaceMatrix", lightSpaceMatrix);
+            Material.SetUniform("viewPos", viewPos);
 
             // Directional light
-            material.SetUniform("dirLight.direction", dirLight.Direction);
-            material.SetUniform("dirLight.ambient", dirLight.Ambient);
-            material.SetUniform("dirLight.diffuse", dirLight.Diffuse);
-            material.SetUniform("dirLight.specular", dirLight.Specular);
+            Material.SetUniform("dirLight.direction", dirLight.Direction);
+            Material.SetUniform("dirLight.ambient", dirLight.Ambient);
+            Material.SetUniform("dirLight.diffuse", dirLight.Diffuse);
+            Material.SetUniform("dirLight.specular", dirLight.Specular);
 
-            // Point lights
-            for (int i = 0; i < pointLights.Length; i++)
+			// SpotLight
+			Material.SetUniform("spotLight.position", spotLight.Position);
+			Material.SetUniform("spotLight.direction", spotLight.Direction);
+			Material.SetUniform("spotLight.cutOff", spotLight.CutOff);
+			Material.SetUniform("spotLight.outerCutOff", spotLight.OuterCutOff);
+			Material.SetUniform("spotLight.ambient", spotLight.Ambient);
+			Material.SetUniform("spotLight.diffuse", spotLight.Diffuse);
+			Material.SetUniform("spotLight.specular", spotLight.Specular);
+			Material.SetUniform("spotLight.constant", spotLight.Constant);
+			Material.SetUniform("spotLight.linear", spotLight.Linear);
+			Material.SetUniform("spotLight.quadratic", spotLight.Quadratic);
+
+
+			// Point lights
+			for (int i = 0; i < pointLights.Length; i++)
             {
-                material.SetUniform($"pointLights[{i}].position", pointLights[i].Position);
-                material.SetUniform($"pointLights[{i}].ambient", pointLights[i].Ambient);
-                material.SetUniform($"pointLights[{i}].diffuse", pointLights[i].Diffuse);
-                material.SetUniform($"pointLights[{i}].specular", pointLights[i].Specular);
-                material.SetUniform($"pointLights[{i}].constant", pointLights[i].Constant);
-                material.SetUniform($"pointLights[{i}].linear", pointLights[i].Linear);
-                material.SetUniform($"pointLights[{i}].quadratic", pointLights[i].Quadratic);
+                Material.SetUniform($"pointLights[{i}].position", pointLights[i].Position);
+                Material.SetUniform($"pointLights[{i}].ambient", pointLights[i].Ambient);
+                Material.SetUniform($"pointLights[{i}].diffuse", pointLights[i].Diffuse);
+                Material.SetUniform($"pointLights[{i}].specular", pointLights[i].Specular);
+                Material.SetUniform($"pointLights[{i}].constant", pointLights[i].Constant);
+                Material.SetUniform($"pointLights[{i}].linear", pointLights[i].Linear);
+                Material.SetUniform($"pointLights[{i}].quadratic", pointLights[i].Quadratic);
             }
 
-            material.SetUniform("viewPos", viewPos);
+
             if (_mesh != null)
             {
                 _mesh.Draw();
@@ -50,17 +73,13 @@ namespace ComputerGrafik1
                 _model.Draw();
             }
         }
-        public Renderer(Material material, Model model)
-        {
-            this.material = material;
-            this._model = model;
-        }
 
 
 
         public void RenderDepth(Shader shader, in Matrix4 model)
         {
             shader.SetMatrix("model", model);
+            GL.DepthMask(DepthTest);
 			if (_mesh != null)
 			{
 				_mesh.Draw();
@@ -69,6 +88,9 @@ namespace ComputerGrafik1
 			{
 				_model.Draw();
 			}
+
+            GL.DepthMask(true);
+
 		}
     }
 }

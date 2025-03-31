@@ -9,8 +9,8 @@ namespace ComputerGrafik1
 		public CameraMovementBehaviour(GameObject gameObject, Game window) : base(gameObject, window)
 		{
 		}
-		float baseMovementSpeed = 2.0f;
-		float fastMovementSpeed = 5.0f;
+		float baseMovementSpeed = 5.0f;
+		float fastMovementSpeed = 10.0f;
 		float movementSpeed;
 		private bool FirstMove;
 		private Vector2 lastPos;
@@ -21,7 +21,6 @@ namespace ComputerGrafik1
 
 			KeyboardState input = window.KeyboardState;
 			MouseState mouse = window.MouseState;
-
 			if (input.IsKeyDown(Keys.LeftShift))
 			{
 				movementSpeed = fastMovementSpeed;
@@ -33,22 +32,22 @@ namespace ComputerGrafik1
 
 			if (input.IsKeyDown(Keys.W))
 			{
-				gameObject.transform.Position -= gameObject.transform.GetForwardVector() * movementSpeed * (float)args.Time;
+				gameObject.Transform.Position += gameObject.Transform.GetForwardVector() * movementSpeed * (float)args.Time;
 
 			}
 			if (input.IsKeyDown(Keys.S))
 			{
-				gameObject.transform.Position += gameObject.transform.GetForwardVector() * movementSpeed * (float)args.Time;
+				gameObject.Transform.Position -= gameObject.Transform.GetForwardVector() * movementSpeed * (float)args.Time;
 			}
 
 			if (input.IsKeyDown(Keys.A))
 			{
-				gameObject.transform.Position -= gameObject.transform.GetRightVector() * movementSpeed * (float)args.Time;
+				gameObject.Transform.Position -= gameObject.Transform.GetRightVector() * movementSpeed * (float)args.Time;
 
 			}
 			if (input.IsKeyDown(Keys.D))
 			{
-				gameObject.transform.Position += gameObject.transform.GetRightVector() * movementSpeed * (float)args.Time;
+				gameObject.Transform.Position += gameObject.Transform.GetRightVector() * movementSpeed * (float)args.Time;
 			}
 
 
@@ -63,16 +62,19 @@ namespace ComputerGrafik1
 				float deltaY = mouse.Y - lastPos.Y;
 				lastPos = new Vector2(mouse.X, mouse.Y);
 
-				gameObject.transform.Rotation.Y -= deltaX * Sensitivity * (float)args.Time;
-				gameObject.transform.Rotation.X -= deltaY * Sensitivity * (float)args.Time;
+			if (window.CursorState == CursorState.Normal)
+				return;
+
+				gameObject.Transform.Rotation.Y -= deltaX * Sensitivity * (float)args.Time;
+				gameObject.Transform.Rotation.X -= deltaY * Sensitivity * (float)args.Time;
 				
-				if (gameObject.transform.Rotation.X > 1.57)
+				if (gameObject.Transform.Rotation.X > 1.57)
 				{
-					gameObject.transform.Rotation.X = 1.57f;
+					gameObject.Transform.Rotation.X = 1.57f;
 				}
-				else if (gameObject.transform.Rotation.X < -1.57f)
+				else if (gameObject.Transform.Rotation.X < -1.57f)
 				{
-					gameObject.transform.Rotation.X = -1.57f;
+					gameObject.Transform.Rotation.X = -1.57f;
 				}
 			}
 		}

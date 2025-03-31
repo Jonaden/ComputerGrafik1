@@ -33,7 +33,7 @@ namespace ComputerGrafik1
 
         public List<ModelMesh> meshes;
 
-        public Model(string path)
+        public Model(string path, float scale = 1/100f)
         {
             AssimpContext importer = new AssimpContext();
 
@@ -57,7 +57,6 @@ namespace ComputerGrafik1
 
             meshes = new List<ModelMesh>();
 
-            float scale = 1/100f;
             Matrix4 scalingMatrix = Matrix4.CreateScale(scale);
 
 
@@ -131,8 +130,6 @@ namespace ComputerGrafik1
             }
 
             List<uint> uints = indices.Select(i => (uint)i).ToList();
-
-            Console.WriteLine(vertices.Count);
 
             return new ModelMesh(vertices.ToArray(), uints.ToArray());
         }

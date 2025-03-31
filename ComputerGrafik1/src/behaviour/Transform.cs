@@ -28,7 +28,7 @@ namespace ComputerGrafik1
 		public Vector3 GetForwardVector()
 		{
             Matrix4 transform = TransformMatrix;
-			Vector3 forward = Vector3.Normalize(new Vector3(transform.M31, transform.M32, transform.M33));
+			Vector3 forward = -Vector3.Normalize(new Vector3(transform.M31, transform.M32, transform.M33));
 
 			return forward;
 		}

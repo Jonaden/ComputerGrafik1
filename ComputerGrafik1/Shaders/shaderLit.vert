@@ -20,5 +20,4 @@ void main()
     TexCoords = aTexCoord;
     FragPosLightSpace = vec4(FragPos, 1.0) * lightSpaceMatrix;
     gl_Position = vec4(aPosition, 1.0) * model * viewProjection;
-
 }

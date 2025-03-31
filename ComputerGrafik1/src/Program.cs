@@ -14,8 +14,9 @@ namespace ComputerGrafik1
 
             NativeWindowSettings nativeWindowSettings = new NativeWindowSettings()
             {
-                ClientSize = new Vector2i(800, 600),
-                Title = "The Dank 3D rendering program"
+                ClientSize = new Vector2i(1600, 900),
+                Title = "The Dank 3D rendering program",
+                //AspectRatio = (16, 9)
             };
             Game game = new Game(gameWindowSettings, nativeWindowSettings);
             game.Run();

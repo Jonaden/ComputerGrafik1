@@ -22,22 +22,22 @@ namespace ComputerGrafik1
 
             if (input.IsKeyDown(Keys.Up))
             {
-                gameObject.transform.Rotation.X += movementSpeed * (float)args.Time;
+                gameObject.Transform.Rotation.X += movementSpeed * (float)args.Time;
 
             }
             if (input.IsKeyDown(Keys.Down))
             {
-                gameObject.transform.Rotation.X -= movementSpeed * (float)args.Time;
+                gameObject.Transform.Rotation.X -= movementSpeed * (float)args.Time;
 
             }
 			if (input.IsKeyDown(Keys.Left))
 			{
-				gameObject.transform.Rotation.Y += movementSpeed * (float)args.Time;
+				gameObject.Transform.Rotation.Y += movementSpeed * (float)args.Time;
 
 			}
 			if (input.IsKeyDown(Keys.Right))
 			{
-				gameObject.transform.Rotation.Y -= movementSpeed * (float)args.Time;
+				gameObject.Transform.Rotation.Y -= movementSpeed * (float)args.Time;
 
 			}
 

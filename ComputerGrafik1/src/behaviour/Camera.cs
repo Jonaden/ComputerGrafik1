@@ -16,7 +16,7 @@ namespace ComputerGrafik1
 
 		public Camera(GameObject gameObject, Game window, float FOV, float aspectX, float aspectY, float near, float far) : base(gameObject, window)
 		{
-			gameObject.transform.Position = new Vector3(0.0f, 0.0f, 3.0f);
+			gameObject.Transform.Position = new Vector3(0.0f, 0.0f, 3.0f);
 			this.FOV = FOV;
 			this.aspectX = aspectX;
 			this.aspectY = aspectY;
@@ -31,14 +31,9 @@ namespace ComputerGrafik1
 		{
 			//Matrix4 view = Matrix4.LookAt(gameObject.transform.Position, gameObject.transform.Position + front, up);
 			Matrix4 view;
-			Matrix4.Invert(gameObject.transform.TransformMatrix, out view);
+			Matrix4.Invert(gameObject.Transform.TransformMatrix, out view);
 			Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(FOV), aspectX / aspectY, near, far);
 			return view * projection;
-		}
-
-		public Vector3 GetPosition()
-		{
-			return gameObject.transform.Position;
 		}
 	}
 }
